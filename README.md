@@ -16,7 +16,7 @@
 <!-- /TOC -->
 
 # Description
-Using a tool capabable of posting (Postman) post a json body to the apps callback `/messages` with a json body like:
+Using a tool capable of posting (Postman) post a json body to the apps endpoint `/messages` with a json body like:
 ```json
 {
   "to": "+19994444",
@@ -25,7 +25,7 @@ Using a tool capabable of posting (Postman) post a json body to the apps callbac
 }
 ```
 The application will text the number `+19994444` a picture of a cat and the words `Hello World!`.
-If you text you Bandwidth number any media file after setting up the application's callback in the bandwidth dashboard; it will save it to the project folder.
+If you text your Bandwidth number any media file after setting up the application's callback in the bandwidth dashboard; it will save it to the project folder.
 
 # Bandwidth
 
