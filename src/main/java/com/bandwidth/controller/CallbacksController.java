@@ -24,8 +24,8 @@ import java.util.List;
 @RequestMapping("callbacks")
 public class CallbacksController {
 
-    private String username = System.getenv("BANDWIDTH_USERNAME");
-    private String password = System.getenv("BANDWIDTH_PASSWORD");
+    private String username = System.getenv("BW_USERNAME");
+    private String password = System.getenv("BW_PASSWORD");
 
     Logger logger = LoggerFactory.getLogger(CallbacksController.class);
 
