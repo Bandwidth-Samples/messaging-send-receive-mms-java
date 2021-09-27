@@ -29,8 +29,31 @@ public class CallbacksController {
 
     Logger logger = LoggerFactory.getLogger(CallbacksController.class);
 
-    @PostMapping("/messageCallback")
-    public void messageCallback(@RequestBody MessageCallback[] callbacks) throws IOException, MalformedURLException {
+    @PostMapping("/outbound/messaging/status")
+    public void statusCallback(@RequestBody MessageCallback[] callbacks) throws IOException, MalformedURLException {
+
+        for(MessageCallback callback : callbacks) {
+            logger.info(callback.getType());
+            logger.info(callback.getDescription());
+            switch( callback.getType()) {
+                case "message-sending":
+                    logger.info("message-sending type is only for MMS");
+                    break;
+                case "message-delivered":
+                    logger.info("your message has been handed off to the Bandwidth's MMSC network, but has not been confirmed at the downstream carrier");
+                    break;
+                case "message-failed":
+                    logger.info("For MMS and Group Messages, you will only receive this callback if you have enabled delivery receipts on MMS. ");
+                    break;
+                default:
+                    logger.info("Message type does not match endpoint. This endpoint is used for message status callbacks only.");
+                    break;
+            }
+        }
+    }
+
+    @PostMapping("/inbound/messaging")
+    public void inboundCallback(@RequestBody MessageCallback[] callbacks) throws IOException, MalformedURLException {
 
         for(MessageCallback callback : callbacks) {
             logger.info(callback.getType());
@@ -44,21 +67,13 @@ public class CallbacksController {
 
                     if(callback.getMessage().getMedia().size() > 0) {
                         // Save the media locally
-                        saveMedia(callback.getMessage().getMedia(), "./");
+                        saveMedia(callback.getMessage().getMedia(), System.getProperty("user.dir").concat("\\"));
                     } else  {
                         logger.info("With NO media");
                     }
                     break;
-                case "message-sending":
-                    logger.info("message-sending type is only for MMS");
-                    break;
-                case "message-delivered":
-                    logger.info("your message has been handed off to the Bandwidth's MMSC network, but has not been confirmed at the downstream carrier");
-                    break;
-                case "message-failed":
-                    logger.info("For MMS and Group Messages, you will only receive this callback if you have enabled delivery receipts on MMS. ");
-                    break;
                 default:
+                    logger.info("Message type does not match endpoint. This endpoint is used for inbound messages only.\nOutbound message callbacks should be sent to /callbacks/outbound/messaging.");
                     break;
             }
         }
@@ -72,7 +87,7 @@ public class CallbacksController {
 
         for(String media : medias){
 
-            String fileName = media.substring(media.lastIndexOf("/"));
+            String fileName = rootPath.concat(media.substring(media.lastIndexOf("/") + 1));
             File file = new File(fileName);
             logger.info("With media, saving to: " + file.getAbsolutePath());
 
